@@ -1,5 +1,10 @@
 package com.q1hang.activiti.core.bpm.controller;
 
+import com.q1hang.activiti.common.config.ActivitiConfig;
+import com.q1hang.activiti.core.SysUser.entity.SysUser;
+import com.q1hang.activiti.core.SysUser.mapper.SysUserMapper;
+import com.q1hang.activiti.core.SysUser.service.ISysUserService;
+import com.q1hang.activiti.core.SysUser.service.impl.SysUserServiceImpl;
 import com.q1hang.activiti.core.bpm.dto.TaskDto;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.RuntimeService;
@@ -13,10 +18,16 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import com.q1hang.activiti.core.bpm.service.Activitiservice;
 
+import javax.sql.DataSource;
+import java.sql.*;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import static org.hibernate.jpa.AvailableSettings.JDBC_DRIVER;
+import static org.quartz.utils.PoolingConnectionProvider.DB_URL;
 
 /**
  * @author q1hang 2019-08-12

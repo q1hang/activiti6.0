@@ -21,7 +21,7 @@ import org.springframework.core.io.support.ResourcePatternResolver;
 @Configuration
 public class ActivitiConfig {
 
-	@Autowired
+    @Autowired
     private DataSource dataSource;
     @Autowired
     private ResourcePatternResolver resourceLoader;
