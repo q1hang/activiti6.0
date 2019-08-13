@@ -1,0 +1,9 @@
+spring:
+  datasource:
+    url: "jdbc:mysql://localhost:3306/activiti6unit?useUnicode=true&amp;characterEncoding=utf-8&amp;useSSL=false"
+    username: "root"
+    driver-class-name: "com.mysql.jdbc.Driver"
+    password: "123456"
+    tomcat:
+      max-active: 1000
+      max-idle: 1000
