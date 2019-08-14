@@ -1,7 +1,9 @@
 package com.q1hang.activiti.core.Leave.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.q1hang.activiti.core.Leave.dto.StartDto;
 import com.q1hang.activiti.core.Leave.dto.TaskDto;
 import com.q1hang.activiti.core.Leave.entity.BsProcessStatus;
 import com.q1hang.activiti.core.Leave.service.IBsLeaveService;
@@ -22,6 +24,7 @@ import org.activiti.engine.task.Task;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -59,7 +62,7 @@ public class BsLeaveServiceImpl extends ServiceImpl<BsLeaveMapper, BsLeave> impl
      * @param business
      * @param day
      */
-    public void startProcess(String business,Double day){
+    public void startProcess(String business ,Double day){
         ProcessInstanceBuilder processInstanceBuilder = runtimeService.createProcessInstanceBuilder();
         Map<String, Object> variables = Maps.newHashMap();
         variables.put("day",day);
@@ -125,20 +128,19 @@ public class BsLeaveServiceImpl extends ServiceImpl<BsLeaveMapper, BsLeave> impl
      * @param userId
      */
     public void setAss(Task task,Integer userId){
-
         SysUser user = sysUserService.getById(userId);
         System.out.println(user.toString());
         if(task.getTaskDefinitionKey().equals("Instructor")){
             QueryWrapper<SysAdministrators> wrapper = new QueryWrapper<SysAdministrators>()
                     .eq("department", user.getDepartment())
                     .eq("position","Instructor");
-            SysAdministrators admin = sysAdministratorsService.getOne(wrapper);
+            SysAdministrators admin = sysAdministratorsService.getOne(wrapper,false);
             taskService.setAssignee(task.getId(),admin.getFullName());
         }else if (task.getTaskDefinitionKey().equals("President")){
             QueryWrapper<SysAdministrators> wrapper = new QueryWrapper<SysAdministrators>()
                     .eq("department", user.getDepartment())
                     .eq("position","President");
-            SysAdministrators admin = sysAdministratorsService.getOne(wrapper);
+            SysAdministrators admin = sysAdministratorsService.getOne(wrapper,false);
             taskService.setAssignee(task.getId(),admin.getFullName());
         }else {
             taskService.setAssignee(task.getId(),user.getFullName());
@@ -154,7 +156,7 @@ public class BsLeaveServiceImpl extends ServiceImpl<BsLeaveMapper, BsLeave> impl
     public List<TaskDto> ADbyAssignee(String assignee){
         List<HistoricTaskInstance> historicTaskInstances = historyService.createHistoricTaskInstanceQuery().taskAssignee(assignee).listPage(0, 100);
         if (CollectionUtils.isEmpty(historicTaskInstances)) {
-            return null;
+            return Lists.newArrayList();
         }else{
             List<TaskDto> collect = historicTaskInstances.stream().map(x -> new TaskDto(x).pass()).collect(Collectors.toList());
             //TODO 这个状态是拒绝还是通过需要重新写
@@ -170,7 +172,7 @@ public class BsLeaveServiceImpl extends ServiceImpl<BsLeaveMapper, BsLeave> impl
     public List<TaskDto> listOfProcess(String business){
         List<HistoricTaskInstance> allTasks = historyService.createHistoricTaskInstanceQuery().processInstanceBusinessKey(business).listPage(0, 100);
         if (CollectionUtils.isEmpty(allTasks)) {
-            return null;
+            return Lists.newArrayList();
         }else{
             List<TaskDto> collect = allTasks.stream().map(x -> new TaskDto(x).pass()).collect(Collectors.toList());
             //TODO 这个状态是拒绝还是通过需要重新写

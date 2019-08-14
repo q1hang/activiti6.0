@@ -2,7 +2,9 @@ package com.q1hang.activiti.core.Leave.controller;
 
 
 
+import com.google.common.collect.Lists;
 import com.q1hang.activiti.common.exception.ParamException;
+import com.q1hang.activiti.core.Leave.dto.StartDto;
 import com.q1hang.activiti.core.Leave.dto.TaskDto;
 import com.q1hang.activiti.core.Leave.entity.BsLeave;
 import com.q1hang.activiti.core.Leave.service.impl.BsLeaveServiceImpl;
@@ -13,11 +15,7 @@ import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.task.Task;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
 import java.util.List;
@@ -53,7 +51,7 @@ public class BsLeaveController {
      */
     @RequestMapping("deploy")
     public void deploy(){
-        Deployment deploy = repositoryService.createDeployment().addClasspathResource("leave.bpmn20.xml").deploy();
+        repositoryService.createDeployment().addClasspathResource("leave.bpmn20.xml").deploy();
     }
 
     /**
@@ -76,15 +74,17 @@ public class BsLeaveController {
 
     /**
      * 开启一个请假流程
-     * @param business
+     * @param startDto
      * @return
      */
-    @RequestMapping("start/{business}")
-    public String testLeave(@PathVariable String business,@RequestParam Double day){
+    @PostMapping("start")
+    public String testLeave(@RequestBody StartDto startDto){
+        Double day=(startDto.getEndingTime().getTime()-startDto.getStartTime().getTime())/86400000.0;
         if(day<=0){
-            return "day参数不正确";
+            return "日期不正确";
         }
         //判断business是否已经有该名称的流程正在流转
+        String business=startDto.getBusiness();
 
         Task isExist = taskService.createTaskQuery().processInstanceBusinessKey(business).singleResult();
         if(isExist!=null){
@@ -131,7 +131,7 @@ public class BsLeaveController {
     public List<TaskDto> testSelectAssignee1(@PathVariable String assignee){
         List<Task> tasks = taskService.createTaskQuery().taskAssignee(assignee).listPage(0, 100);
         if (CollectionUtils.isEmpty(tasks)) {
-            return null;
+            return Lists.newArrayList();
         }else{
             List<TaskDto> collect = tasks.stream().map(x -> new TaskDto(x).pending()).collect(Collectors.toList());
             return collect;
