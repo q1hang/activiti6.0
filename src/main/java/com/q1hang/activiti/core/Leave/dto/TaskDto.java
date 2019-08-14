@@ -45,5 +45,10 @@ public class TaskDto {
     public TaskDto pending(){
         setStatus("pending");
         return this;
+
+}
+    public TaskDto reject(){
+        setStatus("reject");
+        return this;
     }
 }

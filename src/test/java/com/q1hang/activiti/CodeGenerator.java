@@ -77,7 +77,7 @@ public class CodeGenerator {
         // 包配置
         PackageConfig pc = new PackageConfig();
         pc.setModuleName(scanner("模块名"));
-        pc.setParent("pers.zc.activiti.core");
+        pc.setParent("pers");
         mpg.setPackageInfo(pc);
 
         // 自定义配置

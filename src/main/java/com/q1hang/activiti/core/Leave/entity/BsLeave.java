@@ -4,13 +4,15 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.extension.activerecord.Model;
 import com.baomidou.mybatisplus.annotation.TableId;
 import java.time.LocalDateTime;
+import java.util.Date;
+
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
 
 /**
  * <p>
- * 
+ *
  * </p>
  *
  * @author qihang
@@ -44,12 +46,12 @@ public class BsLeave extends Model {
     /**
      * 开始时间
      */
-    private LocalDateTime startTime;
+    private Date startTime;
 
     /**
      * 结束时间
      */
-    private LocalDateTime endingTime;
+    private Date endingTime;
 
     /**
      * 申请状态,0：驳回,1：审批中,2:审批通过
@@ -59,7 +61,7 @@ public class BsLeave extends Model {
     /**
      * 填写时间
      */
-    private LocalDateTime recordTime;
+    private Date recordTime;
 
     /**
      * 流程标识

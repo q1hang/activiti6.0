@@ -1,5 +1,6 @@
 package com.q1hang.activiti.core.Leave.service;
 
+import com.q1hang.activiti.core.Leave.dto.TaskDto;
 import com.q1hang.activiti.core.Leave.entity.BsLeave;
 import com.baomidou.mybatisplus.extension.service.IService;
 
@@ -12,5 +13,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
  * @since 2019-08-13
  */
 public interface IBsLeaveService extends IService<BsLeave> {
+
+    public TaskDto Approval(String business, String varName, String opinion);
 
 }
