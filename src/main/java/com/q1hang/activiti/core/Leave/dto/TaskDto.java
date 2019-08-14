@@ -2,6 +2,7 @@ package com.q1hang.activiti.core.Leave.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
+import org.activiti.engine.history.HistoricTaskInstance;
 import org.activiti.engine.task.Task;
 
 import java.util.Date;
@@ -35,6 +36,14 @@ public class TaskDto {
         taskName=task.getName();
         assignee=task.getAssignee();
         createTime=task.getCreateTime();
+    }
+
+    public TaskDto(HistoricTaskInstance hi){
+        processInstanceId=hi.getProcessInstanceId();
+        taskId=hi.getId();
+        taskName=hi.getName();
+        assignee=hi.getAssignee();
+        createTime=hi.getCreateTime();
     }
 
     public TaskDto pass(){

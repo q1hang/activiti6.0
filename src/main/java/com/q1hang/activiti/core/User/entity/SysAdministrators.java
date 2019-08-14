@@ -22,6 +22,11 @@ public class SysAdministrators extends Model {
     private static final long serialVersionUID = 1L;
 
     /**
+     * id
+     */
+    private Integer id;
+
+    /**
      * 名称
      */
     private String fullName;

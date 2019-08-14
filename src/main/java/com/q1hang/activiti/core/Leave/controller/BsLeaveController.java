@@ -1,34 +1,27 @@
 package com.q1hang.activiti.core.Leave.controller;
 
 
-import com.google.common.collect.Maps;
+
 import com.q1hang.activiti.common.exception.ParamException;
 import com.q1hang.activiti.core.Leave.dto.TaskDto;
 import com.q1hang.activiti.core.Leave.entity.BsLeave;
-import com.q1hang.activiti.core.Leave.entity.BsProcessStatus;
-import com.q1hang.activiti.core.Leave.service.IBsLeaveService;
 import com.q1hang.activiti.core.Leave.service.impl.BsLeaveServiceImpl;
 import com.q1hang.activiti.core.Leave.service.impl.BsProcessStatusServiceImpl;
-import org.activiti.engine.RepositoryService;
-import org.activiti.engine.RuntimeService;
-import org.activiti.engine.TaskService;
+import org.activiti.engine.*;
+import org.activiti.engine.history.HistoricTaskInstance;
 import org.activiti.engine.repository.Deployment;
-import org.activiti.engine.repository.ProcessDefinition;
-import org.activiti.engine.runtime.ProcessInstance;
-import org.activiti.engine.runtime.ProcessInstanceBuilder;
 import org.activiti.engine.task.Task;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.sql.DataSource;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -54,12 +47,31 @@ public class BsLeaveController {
     @Autowired
     private BsProcessStatusServiceImpl bsProcessStatusService;
 
+
     /**
      * 部署请假流程
      */
     @RequestMapping("deploy")
     public void deploy(){
         Deployment deploy = repositoryService.createDeployment().addClasspathResource("leave.bpmn20.xml").deploy();
+    }
+
+    /**
+     * 禁止请假流程
+     */
+    @RequestMapping("stop")
+    public String stopStratProcess(){
+        repositoryService.suspendProcessDefinitionByKey("leave");
+        return "已禁止";
+    }
+
+    /**
+     * 恢复请假流程
+     */
+    @RequestMapping("recover")
+    public String recoverStratProcess(){
+        repositoryService.activateProcessDefinitionByKey("leave");
+        return "已恢复";
     }
 
     /**
@@ -73,12 +85,16 @@ public class BsLeaveController {
             return "day参数不正确";
         }
         //判断business是否已经有该名称的流程正在流转
+
         Task isExist = taskService.createTaskQuery().processInstanceBusinessKey(business).singleResult();
         if(isExist!=null){
             return "该business: "+business+"已经存在.";
         }
+
+
+        //保存请假信息
         BsLeave leave=new BsLeave();
-        leave.setUserId(1);
+        leave.setUserId(1);//TODO 用户ID
         leave.setLeaveType("事假");
         leave.setRemarks("家里有事");
         leave.setProcessBusiness(business);
@@ -87,16 +103,11 @@ public class BsLeaveController {
         leave.setEndingTime(new Date());
         leave.setRecordTime(new Date());
         bsLeaveService.save(leave);
-
-
-
-        ProcessInstanceBuilder processInstanceBuilder = runtimeService.createProcessInstanceBuilder();
-        Map<String, Object> variables = Maps.newHashMap();
-        variables.put("day",day);
-        ProcessInstance pi = processInstanceBuilder.businessKey(business).processDefinitionKey("leave")
-                .variables(variables).start();
+        //开启流程
+        bsLeaveService.startProcess(business,day);
+        //设置办理人
         Task task = taskService.createTaskQuery().processInstanceBusinessKey(business).singleResult();
-
+        bsLeaveService.setAss(task,1);//TODO 用户ID
         return task==null?"流程启动失败":"流程启动成功";
     }
 
@@ -105,10 +116,37 @@ public class BsLeaveController {
      * @param business
      * @return
      */
-    @RequestMapping("select/{business}")
-    public TaskDto testSelect(@PathVariable String business){
+    @RequestMapping("selectBusiness/{business}")
+    public TaskDto testSelectBusiness(@PathVariable String business){
         Task task = taskService.createTaskQuery().processInstanceBusinessKey(business).singleResult();
         return task==null?null:new TaskDto(task).pending();
+    }
+
+    /**
+     * 查看办理人的待办流程任务
+     * @param assignee
+     * @return
+     */
+    @RequestMapping("NTBDWbyAssignee/{assignee}")
+    public List<TaskDto> testSelectAssignee1(@PathVariable String assignee){
+        List<Task> tasks = taskService.createTaskQuery().taskAssignee(assignee).listPage(0, 100);
+        if (CollectionUtils.isEmpty(tasks)) {
+            return null;
+        }else{
+            List<TaskDto> collect = tasks.stream().map(x -> new TaskDto(x).pending()).collect(Collectors.toList());
+            return collect;
+        }
+    }
+
+
+    /**
+     * 查看办理人的已办流程任务
+     * @param assignee
+     * @return
+     */
+    @RequestMapping("ADbyAssignee/{assignee}")
+    public List<TaskDto> testAlreadydone(@PathVariable String assignee){
+        return bsLeaveService.ADbyAssignee(assignee);
     }
 
     /**
@@ -123,20 +161,14 @@ public class BsLeaveController {
         if(opinion=="yes"||opinion=="Yes"||opinion=="no"||opinion=="No") {
             throw new ParamException("InstructorOpinion 参数异常");
         }
-        TaskDto task = bsLeaveService.Approval(business, varname, opinion);
+        TaskDto task = bsLeaveService.Approval(business,1, varname, opinion); //TODO 用户ID
         return task;
     }
 
-    public void list(){
-
+    @RequestMapping("listOfProcess/{business}")
+    public List<TaskDto> listOfProcess(@PathVariable String business){
+        return bsLeaveService.listOfProcess(business);
     }
-    
-
-    //打印待办
-
-    //打印已办
-
-    //打印被驳回
 
 
 }

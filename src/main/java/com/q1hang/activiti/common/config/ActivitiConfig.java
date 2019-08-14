@@ -2,16 +2,13 @@ package com.q1hang.activiti.common.config;
 
 import java.io.IOException;
 
-import javax.annotation.PostConstruct;
 import javax.sql.DataSource;
 
 import org.activiti.engine.*;
 import org.activiti.engine.impl.cfg.StandaloneProcessEngineConfiguration;
-import org.activiti.engine.repository.DeploymentBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.ResourcePatternResolver;
 
 /**
@@ -61,6 +58,9 @@ public class ActivitiConfig {
 
     @Bean
     public FormService formService(){return processEngine().getFormService();}
+
+    @Bean
+    public HistoryService historyService(){return processEngine().getHistoryService();}
     
     /**
      * 部署流程

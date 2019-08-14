@@ -14,6 +14,6 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface IBsLeaveService extends IService<BsLeave> {
 
-    public TaskDto Approval(String business, String varName, String opinion);
+    public TaskDto Approval(String business, Integer userId,String varName, String opinion);
 
 }

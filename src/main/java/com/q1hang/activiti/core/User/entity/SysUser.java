@@ -22,6 +22,11 @@ public class SysUser extends Model {
     private static final long serialVersionUID = 1L;
 
     /**
+     * id
+     */
+    private Integer id;
+
+    /**
      * 名称
      */
     private String fullName;
