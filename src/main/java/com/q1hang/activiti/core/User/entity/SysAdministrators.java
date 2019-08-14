@@ -1,9 +1,7 @@
-package com.q1hang.activiti.core.SysUser.entity;
+package com.q1hang.activiti.core.User.entity;
 
 import com.baomidou.mybatisplus.extension.activerecord.Model;
 import java.time.LocalDateTime;
-import java.util.Date;
-
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
@@ -14,12 +12,12 @@ import lombok.experimental.Accessors;
  * </p>
  *
  * @author qihang
- * @since 2019-08-13
+ * @since 2019-08-14
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
 @Accessors(chain = true)
-public class SysUser extends Model {
+public class SysAdministrators extends Model {
 
     private static final long serialVersionUID = 1L;
 
@@ -29,14 +27,24 @@ public class SysUser extends Model {
     private String fullName;
 
     /**
+     * 职位:FDY、FYZ
+     */
+    private String position;
+
+    /**
+     * 系别
+     */
+    private String department;
+
+    /**
      * 创建时间
      */
-    private Date createTime;
+    private LocalDateTime createTime;
 
     /**
      * 更新时间
      */
-    private Date updateTime;
+    private LocalDateTime updateTime;
 
 
 }

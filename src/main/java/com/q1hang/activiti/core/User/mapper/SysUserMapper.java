@@ -1,6 +1,6 @@
-package com.q1hang.activiti.core.SysUser.mapper;
+package com.q1hang.activiti.core.User.mapper;
 
-import com.q1hang.activiti.core.SysUser.entity.SysUser;
+import com.q1hang.activiti.core.User.entity.SysUser;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
 /**
@@ -9,7 +9,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  * </p>
  *
  * @author qihang
- * @since 2019-08-13
+ * @since 2019-08-14
  */
 public interface SysUserMapper extends BaseMapper<SysUser> {
 

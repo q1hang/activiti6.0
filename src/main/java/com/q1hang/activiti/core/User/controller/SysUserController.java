@@ -1,4 +1,4 @@
-package com.q1hang.activiti.core.SysUser.controller;
+package com.q1hang.activiti.core.User.controller;
 
 
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -11,10 +11,10 @@ import org.springframework.web.bind.annotation.RestController;
  * </p>
  *
  * @author qihang
- * @since 2019-08-13
+ * @since 2019-08-14
  */
 @RestController
-@RequestMapping("/SysUser/sys-user")
+@RequestMapping("/User/sys-user")
 public class SysUserController {
 
 }

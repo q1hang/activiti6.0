@@ -1,6 +1,6 @@
-package com.q1hang.activiti.core.SysUser.service;
+package com.q1hang.activiti.core.User.service;
 
-import com.q1hang.activiti.core.SysUser.entity.SysUser;
+import com.q1hang.activiti.core.User.entity.SysUser;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 /**
@@ -9,7 +9,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
  * </p>
  *
  * @author qihang
- * @since 2019-08-13
+ * @since 2019-08-14
  */
 public interface ISysUserService extends IService<SysUser> {
 
