@@ -12,8 +12,8 @@ import com.q1hang.activiti.core.Leave.entity.BsLeave;
 import com.q1hang.activiti.core.Leave.service.impl.BsLeaveServiceImpl;
 import com.q1hang.activiti.core.Leave.service.impl.BsProcessStatusServiceImpl;
 import org.activiti.engine.*;
-import org.activiti.engine.history.HistoricTaskInstance;
-import org.activiti.engine.repository.Deployment;
+import org.activiti.engine.history.HistoricProcessInstance;
+import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,7 +46,8 @@ public class BsLeaveController {
     private BsLeaveServiceImpl bsLeaveService;
     @Autowired
     private BsProcessStatusServiceImpl bsProcessStatusService;
-
+    @Autowired
+    private HistoryService historyService;
 
     /**
      * 部署请假流程
@@ -85,10 +86,13 @@ public class BsLeaveController {
         if(day<=0){
             return "日期不正确";
         }
-        //判断business是否已经有该名称的流程正在流转
+        //判断历史数据以及当前流程中是否有重复的business
         String business=startDto.getBusiness();
-
-        Task isExist = taskService.createTaskQuery().processInstanceBusinessKey(business).singleResult();
+        HistoricProcessInstance historicProcessInstance = historyService.createHistoricProcessInstanceQuery().processInstanceBusinessKey(business).singleResult();
+        if(historicProcessInstance!=null){
+            return "该business: "+business+"已经存在.";
+        }
+        ProcessInstance isExist = runtimeService.createProcessInstanceQuery().processInstanceBusinessKey(business).singleResult();
         if(isExist!=null){
             return "该business: "+business+"已经存在.";
         }

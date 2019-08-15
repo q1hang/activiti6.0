@@ -3,6 +3,7 @@ package com.q1hang.activiti.core.Leave.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.q1hang.activiti.common.exception.NullTaskException;
 import com.q1hang.activiti.core.Leave.dto.StartDto;
 import com.q1hang.activiti.core.Leave.dto.TaskDto;
 import com.q1hang.activiti.core.Leave.entity.BsProcessStatus;
@@ -82,11 +83,12 @@ public class BsLeaveServiceImpl extends ServiceImpl<BsLeaveMapper, BsLeave> impl
         //TODO 完成登录功能后才能实现验证身份
 
         Task task = taskService.createTaskQuery().processInstanceBusinessKey(business).singleResult();
-        if(task!=null){
-            Map<String, Object> variables1 = new HashMap<>();
-            variables1.put(varName, opinion);
-            taskService.complete(task.getId(), variables1);
+        if(task==null){
+            throw new NullTaskException("当前Business并无任务");
         }
+        Map<String, Object> variables1 = new HashMap<>();
+        variables1.put(varName, opinion);
+        taskService.complete(task.getId(), variables1);
         Task nextTask = taskService.createTaskQuery().processInstanceBusinessKey(business).singleResult();
         //设置办理人
         if(nextTask!=null)
@@ -186,16 +188,18 @@ public class BsLeaveServiceImpl extends ServiceImpl<BsLeaveMapper, BsLeave> impl
         historicTaskInstances.forEach(
                 x->{
                     BsProcessStatus bsProcessStatus = bsProcessStatusService.getOne(new QueryWrapper<BsProcessStatus>().eq("task_id", x.getId()));
-                    TaskDto taskDto=null;
-                    if(bsProcessStatus.getApproveResult()==0){
-                        taskDto= new TaskDto(x).reject();
-                    }else if(bsProcessStatus.getApproveResult()==2){
-                        taskDto = new TaskDto(x).pass();
-                    }else{
-                        taskDto = new TaskDto(x).pending();
+                    if(bsProcessStatus!=null){
+                        TaskDto taskDto=null;
+                        if(bsProcessStatus.getApproveResult()==0){
+                            taskDto= new TaskDto(x).reject();
+                        }else if(bsProcessStatus.getApproveResult()==2){
+                            taskDto = new TaskDto(x).pass();
+                        }else{
+                            taskDto = new TaskDto(x).pending();
+                        }
+                        taskDto.setApproveRemark(bsProcessStatus.getApproveRemark());
+                        result.add(taskDto);
                     }
-                    taskDto.setApproveRemark(bsProcessStatus.getApproveRemark());
-                    result.add(taskDto);
                 }
         );
         //判断流程是否结束
