@@ -26,11 +26,13 @@ public class TaskDto {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone = "GMT+8")
     public Date createTime;
 
+    //审批说明
+    public String approveRemark;
+
     //流程任务状态
     public String status;
 
-
-    public TaskDto(Task task){
+   public TaskDto(Task task){
         processInstanceId=task.getProcessInstanceId();
         taskId=task.getId();
         taskName=task.getName();

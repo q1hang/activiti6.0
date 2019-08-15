@@ -2,8 +2,10 @@ package com.q1hang.activiti.core.Leave.controller;
 
 
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.google.common.collect.Lists;
 import com.q1hang.activiti.common.exception.ParamException;
+import com.q1hang.activiti.core.Leave.dto.LeaveDto;
 import com.q1hang.activiti.core.Leave.dto.StartDto;
 import com.q1hang.activiti.core.Leave.dto.TaskDto;
 import com.q1hang.activiti.core.Leave.entity.BsLeave;
@@ -170,7 +172,25 @@ public class BsLeaveController {
         return bsLeaveService.listOfProcess(business);
     }
 
-    //
+    /**
+     * 查看某人所有请假记录
+     * @param userId
+     * @return
+     */
+    @GetMapping("list")
+    public List<LeaveDto> list(@RequestParam Integer userId){
+        List<LeaveDto> list =Lists.newArrayList();
+        if(userId!=null) {
+            List<BsLeave> bsLeaves = bsLeaveService.list(new QueryWrapper<BsLeave>().eq("user_id", userId));
+            bsLeaves.forEach(x->{
+                LeaveDto leaveDto = new LeaveDto(x);
+                List<TaskDto> taskListbyBusiness = bsLeaveService.getTaskListbyBusiness(x.getProcessBusiness());
+                leaveDto.setTaskDtoList(taskListbyBusiness);
+                list.add(leaveDto);
+            });
+        }
+        return list;
+    }
 
 }
 

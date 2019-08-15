@@ -180,4 +180,30 @@ public class BsLeaveServiceImpl extends ServiceImpl<BsLeaveMapper, BsLeave> impl
         }
     }
 
+    public List<TaskDto> getTaskListbyBusiness(String business){
+        List<TaskDto> result=Lists.newArrayList();
+        List<HistoricTaskInstance> historicTaskInstances = historyService.createHistoricTaskInstanceQuery().processInstanceBusinessKey(business).listPage(0, 100);
+        historicTaskInstances.forEach(
+                x->{
+                    BsProcessStatus bsProcessStatus = bsProcessStatusService.getOne(new QueryWrapper<BsProcessStatus>().eq("task_id", x.getId()));
+                    TaskDto taskDto=null;
+                    if(bsProcessStatus.getApproveResult()==0){
+                        taskDto= new TaskDto(x).reject();
+                    }else if(bsProcessStatus.getApproveResult()==2){
+                        taskDto = new TaskDto(x).pass();
+                    }else{
+                        taskDto = new TaskDto(x).pending();
+                    }
+                    taskDto.setApproveRemark(bsProcessStatus.getApproveRemark());
+                    result.add(taskDto);
+                }
+        );
+        //判断流程是否结束
+        List<Task> tasks = taskService.createTaskQuery().processInstanceBusinessKey(business).listPage(0, 100);
+        if(CollectionUtils.isNotEmpty(tasks)){
+            tasks.forEach(x->result.add(new TaskDto(x).pending()));
+        }
+        return result;
+    }
+
 }
