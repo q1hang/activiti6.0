@@ -109,6 +109,7 @@ public class BsLeaveServiceImpl extends ServiceImpl<BsLeaveMapper, BsLeave> impl
             if(nextTask==null){
                 BsLeave process_business=new BsLeave();
                 process_business.setStatus(2);
+                process_business.setEndingTime(new Date());
                 update(process_business,new QueryWrapper<BsLeave>().eq("process_business",business));
             }
             return new TaskDto(task).pass();
@@ -118,6 +119,7 @@ public class BsLeaveServiceImpl extends ServiceImpl<BsLeaveMapper, BsLeave> impl
             if(nextTask==null){
                 BsLeave process_business=new BsLeave();
                 process_business.setStatus(0);
+                process_business.setEndingTime(new Date());
                 update(process_business,new QueryWrapper<BsLeave>().eq("process_business",business));
             }
             return new TaskDto(task).reject();
@@ -182,12 +184,19 @@ public class BsLeaveServiceImpl extends ServiceImpl<BsLeaveMapper, BsLeave> impl
         }
     }
 
+    /**
+     * 展示某个business所有任务
+     * @param business
+     * @return
+     */
     public List<TaskDto> getTaskListbyBusiness(String business){
         List<TaskDto> result=Lists.newArrayList();
-        List<HistoricTaskInstance> historicTaskInstances = historyService.createHistoricTaskInstanceQuery().processInstanceBusinessKey(business).listPage(0, 100);
+        List<HistoricTaskInstance> historicTaskInstances = historyService.createHistoricTaskInstanceQuery().processInstanceBusinessKey(business)
+                .orderByHistoricTaskInstanceEndTime().asc().listPage(0, 100);
         historicTaskInstances.forEach(
                 x->{
-                    BsProcessStatus bsProcessStatus = bsProcessStatusService.getOne(new QueryWrapper<BsProcessStatus>().eq("task_id", x.getId()));
+                    BsProcessStatus bsProcessStatus = bsProcessStatusService.getOne(new QueryWrapper<BsProcessStatus>()
+                            .eq("task_id", x.getId()));
                     if(bsProcessStatus!=null){
                         TaskDto taskDto=null;
                         if(bsProcessStatus.getApproveResult()==0){

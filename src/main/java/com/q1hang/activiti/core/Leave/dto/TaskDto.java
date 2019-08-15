@@ -26,6 +26,10 @@ public class TaskDto {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone = "GMT+8")
     public Date createTime;
 
+    //任务结束时间
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone = "GMT+8")
+    public Date endingTime;
+
     //审批说明
     public String approveRemark;
 
@@ -46,6 +50,7 @@ public class TaskDto {
         taskName=hi.getName();
         assignee=hi.getAssignee();
         createTime=hi.getCreateTime();
+        endingTime=hi.getEndTime();
     }
 
     public TaskDto pass(){
