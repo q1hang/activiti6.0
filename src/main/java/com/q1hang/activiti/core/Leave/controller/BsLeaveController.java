@@ -106,7 +106,6 @@ public class BsLeaveController {
         leave.setProcessBusiness(business);
         leave.setStatus(1);
         leave.setStartTime(new Date());
-        leave.setEndingTime(new Date());
         leave.setRecordTime(new Date());
         bsLeaveService.save(leave);
         //开启流程
@@ -173,7 +172,7 @@ public class BsLeaveController {
 
     @RequestMapping("listOfProcess/{business}")
     public List<TaskDto> listOfProcess(@PathVariable String business){
-        return bsLeaveService.listOfProcess(business);
+        return bsLeaveService.getTaskListbyBusiness(business);
     }
 
     /**
