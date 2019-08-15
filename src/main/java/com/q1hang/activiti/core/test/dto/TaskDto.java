@@ -1,4 +1,4 @@
-package com.q1hang.activiti.core.bpm.dto;
+package com.q1hang.activiti.core.test.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;

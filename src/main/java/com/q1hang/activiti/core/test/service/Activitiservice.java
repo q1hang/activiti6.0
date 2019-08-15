@@ -1,6 +1,6 @@
-package com.q1hang.activiti.core.bpm.service;
+package com.q1hang.activiti.core.test.service;
 
-import com.q1hang.activiti.core.bpm.dto.TaskDto;
+import com.q1hang.activiti.core.test.dto.TaskDto;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;

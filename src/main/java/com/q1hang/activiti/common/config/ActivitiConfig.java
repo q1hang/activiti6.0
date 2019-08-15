@@ -13,7 +13,7 @@ import org.springframework.core.io.support.ResourcePatternResolver;
 
 /**
  * 使用Java类完成配置文件
- * @author zc 2018-06-04
+ * @author q1hang 2019-08-10
  */
 @Configuration
 public class ActivitiConfig {

@@ -26,7 +26,6 @@ public class DataResponseWrapper implements ResponseBodyAdvice<Object> {
         if (o instanceof JsonData) {
             return o;
         } else if (o instanceof String) {
-            //对String类型作处理 不然会报错
             JsonData<Object> dataResponse = new JsonData<>(200, "success", o);
             return JsonMapper.obj2String(dataResponse);
         } else {
