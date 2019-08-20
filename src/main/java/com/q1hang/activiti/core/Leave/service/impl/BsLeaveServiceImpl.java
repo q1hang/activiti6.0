@@ -68,7 +68,8 @@ public class BsLeaveServiceImpl extends ServiceImpl<BsLeaveMapper, BsLeave> impl
         Map<String, Object> variables = Maps.newHashMap();
         variables.put("day",day);
         ProcessInstance pi = processInstanceBuilder.businessKey(business).processDefinitionKey("leave")
-                .variables(variables).start();
+                .variables(variables)
+                .start();
     }
 
 

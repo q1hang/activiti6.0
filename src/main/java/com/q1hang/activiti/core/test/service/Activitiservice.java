@@ -35,7 +35,8 @@ public class Activitiservice {
         //采用key来启动流程定义并设置流程变量，返回流程实例
         ProcessInstanceBuilder processInstanceBuilder = runtimeService.createProcessInstanceBuilder();
         ProcessInstance pi = processInstanceBuilder.businessKey(business).processDefinitionKey("singleAssignee")
-                .variables(variables).start();
+                .variables(variables)
+                .start();
 
         String processId = pi.getId();
         System.out.println("流程创建成功，当前流程实例ID：" + processId);
