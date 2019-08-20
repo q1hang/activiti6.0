@@ -1,6 +1,6 @@
-package com.q1hang.activiti.core.test.service;
+package com.q1hang.activiti.core.modeler.service;
 
-import com.q1hang.activiti.core.test.dto.TaskDto;
+import com.q1hang.activiti.core.modeler.dto.TaskDto;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;

@@ -1,4 +1,4 @@
-package com.q1hang.activiti.core.test.dto;
+package com.q1hang.activiti.core.modeler.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;

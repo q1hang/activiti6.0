@@ -37,7 +37,7 @@ public class MybatisPlusConfig {
      * @return
      */
     @Bean
-    @Profile({"dev"})// 设置 dev test 环境开启
+    @Profile({"dev"})// 设置 dev modeler 环境开启
     public PerformanceInterceptor performanceInterceptor() {
         return new PerformanceInterceptor();
     }

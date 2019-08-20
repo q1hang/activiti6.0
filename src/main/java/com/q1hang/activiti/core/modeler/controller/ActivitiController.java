@@ -1,7 +1,7 @@
-package com.q1hang.activiti.core.test.controller;
+package com.q1hang.activiti.core.modeler.controller;
 
 
-import com.q1hang.activiti.core.test.dto.TaskDto;
+import com.q1hang.activiti.core.modeler.dto.TaskDto;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
@@ -12,7 +12,7 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import com.q1hang.activiti.core.test.service.Activitiservice;
+import com.q1hang.activiti.core.modeler.service.Activitiservice;
 
 import java.util.ArrayList;
 import java.util.HashMap;
