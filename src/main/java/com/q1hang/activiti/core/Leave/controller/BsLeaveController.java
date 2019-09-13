@@ -163,7 +163,7 @@ public class BsLeaveController {
      */
     @RequestMapping("approval/{business}")
     public TaskDto testApproval(@PathVariable String business, @RequestParam String varname,@RequestParam String opinion){
-        if(opinion=="yes"||opinion=="Yes"||opinion=="no"||opinion=="No") {
+        if(!opinion.equals("yes")||!opinion.equals("Yes")||!opinion.equals("no")||!opinion.equals("No")) {
             throw new ParamException("InstructorOpinion 参数异常");
         }
         TaskDto task = bsLeaveService.Approval(business,1, varname, opinion); //TODO 用户ID
